@@ -1,5 +1,10 @@
-import { $ } from "bun";
+import { BunFile } from 'bun';
+const file = Bun.file(import.meta.dir + '/package.json'); // BunFile
 
-const response = await $`ls`.text();
+const pkg = await file.json(); // BunFile extends Blob
+console.log(pkg);
 
-console.log(response);
+pkg.name = 'my-package';
+pkg.version = '1.0.0';
+
+await Bun.write(file, JSON.stringify(pkg, null, 2));
