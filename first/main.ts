@@ -1,10 +1,13 @@
-import { BunFile } from 'bun';
-const file = Bun.file(import.meta.dir + '/package.json'); // BunFile
+import { BunFile } from "bun";
+const password = "super-secure-pa$$word";
 
-const pkg = await file.json(); // BunFile extends Blob
-console.log(pkg);
+const hash = await Bun.password.hash(password);
+// => $argon2id$v=19$m=65536,t=2,p=1$tFq+9AVr1bfPxQdh...
 
-pkg.name = 'my-package';
-pkg.version = '1.0.0';
-
-await Bun.write(file, JSON.stringify(pkg, null, 2));
+try {
+    const isMatch = await Bun.password.verify(password, hash);
+    // => true
+    console.log(isMatch)
+} catch (error) {
+    console.error("Password verification failed!!!", error);
+}
